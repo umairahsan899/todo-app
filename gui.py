@@ -1,7 +1,6 @@
 import time
 import function
 import PySimpleGUI as sg
-from time import strftime
 import os
 if not os.path.exists('todos.txt'):
     with open('todos.txt','w') as file:
@@ -10,7 +9,7 @@ sg.theme("black")
 clock=sg.Text("Clock",key="clock")
 label=sg.Text("Type in a To-Do:")
 input_box=sg.InputText(tooltip="Enter To Do:",key="todo")
-add_button=sg.Button("Add")
+add_button=sg.Button("Add",size=10)
 list_box=sg.Listbox(values=function.get_todos(),key="todos",
                     enable_events=True,size=(45,10),)
 edit_button=sg.Button("Edit")
@@ -25,7 +24,11 @@ window=sg.Window(title="My To-Do App",
                  font=("Helvetica",20))
 while True:
     event,values=window.read(timeout=200)
-    window["clock"].update(time.strftime("%b %d,%y  %H:%M:%S"))
+    # 1. Check for exit conditions FIRST
+    if event == sg.WIN_CLOSED or event == "Exit":
+        break
+    # 2. Only update the clock if the window is still open
+    window["clock"].update(value=time.strftime("%b %d, %Y  %H:%M:%S"))
     match event:
         case "Add":
             todos=function.get_todos()
